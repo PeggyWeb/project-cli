@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "download-git-repo": "^3.0.2",
     "enquirer": "^2.3.6",
     "kolorist": "^1.2.10",
     "minimist": "^1.2.5"

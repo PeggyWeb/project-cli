@@ -1,21 +1,26 @@
 const fs = require('fs')
 const path = require('path')
-module.export = function emptyDir(dir) {
-	if (!fs.existsSync(dir)) {
-		return
-	}
-	for (const file of fs.readdirSync(dir)) {
-		const abs = path.resolve(dir, file)
-		if (fs.lstatSync(abs).isDirectory) {
-			emptyDir(abs)
-			fs.rmdirSync(abs)
-		} else {
-			fs.unlinkSync(abs)
+const emptyDir = function (dir) {
+	console.log(dir)
+	try {
+		if (!fs.existsSync(dir)) {
+			return
 		}
+		for (const file of fs.readdirSync(dir)) {
+			const abs = path.resolve(dir, file)
+			if (fs.lstatSync(abs).isDirectory) {
+				emptyDir(abs)
+				fs.rmdirSync(abs)
+			} else {
+				fs.unlinkSync(abs)
+			}
+		}
+	} catch (err) {
+		console.log(err)
+		throw err
 	}
 }
-
-module.export = function copy(src, dest) {
+const copy = function (src, dest) {
 	const stat = fs.statSync(src)
 	if (stat.isDirectory()) {
 		copyDir(src, dest)
@@ -23,8 +28,7 @@ module.export = function copy(src, dest) {
 		fs.copyFileSync(src, dest)
 	}
 }
-
-module.export = function copyDir(srcDir, destDir) {
+const copyDir = function (srcDir, destDir) {
 	fs.mkdirSync(destDir, { recursive: true })
 	for (const file of fs.readdirSync(srcDir)) {
 		const srcFile = path.resolve(srcDir, file)
@@ -32,8 +36,7 @@ module.export = function copyDir(srcDir, destDir) {
 		copy(srcFile, destFile)
 	}
 }
-
-module.export = function write(file, content) {
+const write = function (file, content) {
 	const targetPath = renameFiles[file]
 		? path.join(root, renameFiles[file])
 		: path.join(root, file)
@@ -43,3 +46,8 @@ module.export = function write(file, content) {
 		copy(path.join(templateDir, file), targetPath)
 	}
 }
+
+module.exports.emptyDir = emptyDir
+module.exports.copy = copy
+module.exports.copyDir = copyDir
+module.exports.write = write
